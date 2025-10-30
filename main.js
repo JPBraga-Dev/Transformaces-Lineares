@@ -1,6 +1,7 @@
-// Arquivo principal da interface.
+// interface.
 
 import { Tranformations } from "./transformacoes/transformation.js";
+import * as MatrixSteps from "./matrixSteps.js";
 
 // Alternância de tema claro/escuro.
 const body = document.body;
@@ -20,11 +21,11 @@ atualizaTextoTema();
 
 // Controle das abas 2D e 3D.
 const tabBtns = document.querySelectorAll(".tab-btn");
-tabBtns.forEach(btn => {
+tabBtns.forEach((btn) => {
   btn.addEventListener("click", () => {
-    tabBtns.forEach(b => b.classList.remove("ativo"));
+    tabBtns.forEach((b) => b.classList.remove("ativo"));
     btn.classList.add("ativo");
-    document.querySelectorAll("section.card").forEach(sec => {
+    document.querySelectorAll("section.card").forEach((sec) => {
       sec.style.display = "none";
     });
     document.querySelector(btn.dataset.alvo).style.display = "block";
@@ -57,7 +58,7 @@ function limpar(elemento) {
 }
 
 function formatarVetor(resultado) {
-  return `[ ${resultado.map(n => Number(n.toFixed(6))).join(", ")} ]`;
+  return `[ ${resultado.map((n) => Number(n.toFixed(2))).join(", ")} ]`;
 }
 
 // Fluxo específico do painel 2D.
@@ -114,7 +115,9 @@ function desenharPlano2D(vetor) {
 
   const dados = Array.isArray(vetor) ? vetor.map(Number) : [];
   const valido = dados.length === 2 && dados.every(Number.isFinite);
-  const limite = valido ? Math.max(1, Math.abs(dados[0]), Math.abs(dados[1])) : 1;
+  const limite = valido
+    ? Math.max(1, Math.abs(dados[0]), Math.abs(dados[1]))
+    : 1;
   const padding = 28;
   const raio = Math.min(width, height) / 2 - padding;
   const escala = raio > 0 ? raio / limite : 0;
@@ -173,7 +176,11 @@ function desenharPlano2D(vetor) {
 
   ctx2d.fillStyle = escuroAtivo ? "#ffffff" : "rgba(31, 45, 68, 0.85)";
   ctx2d.font = "12px sans-serif";
-  ctx2d.fillText(`(${dados[0].toFixed(2)}, ${dados[1].toFixed(2)})`, px + 10, py - 10);
+  ctx2d.fillText(
+    `(${dados[0].toFixed(2)}, ${dados[1].toFixed(2)})`,
+    px + 10,
+    py - 10
+  );
 }
 
 function desenharPlano3D(vetor) {
@@ -188,15 +195,25 @@ function desenharPlano3D(vetor) {
   const origemX = width / 2;
   const origemY = height / 2;
   const escuroAtivo = body.classList.contains("modo-escuro");
-  const corPlano = escuroAtivo ? "rgba(54, 74, 116, 0.72)" : "rgba(142, 172, 235, 0.25)";
-  const corGrade = escuroAtivo ? "rgba(160, 186, 255, 0.16)" : "rgba(60, 88, 150, 0.25)";
-  const corOrigem = escuroAtivo ? "rgba(230, 236, 255, 0.9)" : "rgba(24, 36, 64, 0.85)";
+  const corPlano = escuroAtivo
+    ? "rgba(54, 74, 116, 0.72)"
+    : "rgba(142, 172, 235, 0.25)";
+  const corGrade = escuroAtivo
+    ? "rgba(160, 186, 255, 0.16)"
+    : "rgba(60, 88, 150, 0.25)";
+  const corOrigem = escuroAtivo
+    ? "rgba(230, 236, 255, 0.9)"
+    : "rgba(24, 36, 64, 0.85)";
   const corTexto = escuroAtivo ? "#dce6ff" : "#1f2d44";
-  const corContornoPlano = escuroAtivo ? "rgba(160, 186, 255, 0.25)" : "rgba(84, 122, 204, 0.25)";
+  const corContornoPlano = escuroAtivo
+    ? "rgba(160, 186, 255, 0.25)"
+    : "rgba(84, 122, 204, 0.25)";
 
   const dados = Array.isArray(vetor) ? vetor.map(Number) : [];
   const valido = dados.length === 3 && dados.every(Number.isFinite);
-  const limite = valido ? Math.max(1, Math.abs(dados[0]), Math.abs(dados[1]), Math.abs(dados[2])) : 1;
+  const limite = valido
+    ? Math.max(1, Math.abs(dados[0]), Math.abs(dados[1]), Math.abs(dados[2]))
+    : 1;
   const padding = 48;
   const raio = Math.min(width, height) / 2 - padding;
   const escala = raio > 0 ? raio / limite : 0;
@@ -207,17 +224,17 @@ function desenharPlano3D(vetor) {
   const angulo = Math.PI / 6;
   const cos = Math.cos(angulo);
   const sin = Math.sin(angulo);
-  const projetar = (x, y, z) => ([
+  const projetar = (x, y, z) => [
     origemX + (x - z) * cos * escala,
-    origemY - y * escala + (x + z) * sin * escala
-  ]);
+    origemY - y * escala + (x + z) * sin * escala,
+  ];
 
   const origem = projetar(0, 0, 0);
   const plano = [
     projetar(-limite, 0, -limite),
     projetar(limite, 0, -limite),
     projetar(limite, 0, limite),
-    projetar(-limite, 0, limite)
+    projetar(-limite, 0, limite),
   ];
 
   ctx3d.fillStyle = corPlano;
@@ -263,19 +280,37 @@ function desenharPlano3D(vetor) {
     ctx3d.fillStyle = cor;
     ctx3d.beginPath();
     ctx3d.moveTo(b[0], b[1]);
-    ctx3d.lineTo(b[0] - tamanho * Math.cos(ang - Math.PI / 6), b[1] - tamanho * Math.sin(ang - Math.PI / 6));
-    ctx3d.lineTo(b[0] - tamanho * Math.cos(ang + Math.PI / 6), b[1] - tamanho * Math.sin(ang + Math.PI / 6));
+    ctx3d.lineTo(
+      b[0] - tamanho * Math.cos(ang - Math.PI / 6),
+      b[1] - tamanho * Math.sin(ang - Math.PI / 6)
+    );
+    ctx3d.lineTo(
+      b[0] - tamanho * Math.cos(ang + Math.PI / 6),
+      b[1] - tamanho * Math.sin(ang + Math.PI / 6)
+    );
     ctx3d.closePath();
     ctx3d.fill();
   };
 
   const eixos = [
-    { label: "X", cor: escuroAtivo ? "#82a8ff" : "#3355aa", alvo: projetar(limite, 0, 0) },
-    { label: "Y", cor: escuroAtivo ? "#55d0a0" : "#1d8f63", alvo: projetar(0, limite, 0) },
-    { label: "Z", cor: escuroAtivo ? "#f2a0c5" : "#c4477f", alvo: projetar(0, 0, limite) }
+    {
+      label: "X",
+      cor: escuroAtivo ? "#82a8ff" : "#3355aa",
+      alvo: projetar(limite, 0, 0),
+    },
+    {
+      label: "Y",
+      cor: escuroAtivo ? "#55d0a0" : "#1d8f63",
+      alvo: projetar(0, limite, 0),
+    },
+    {
+      label: "Z",
+      cor: escuroAtivo ? "#f2a0c5" : "#c4477f",
+      alvo: projetar(0, 0, limite),
+    },
   ];
 
-  eixos.forEach(eixo => {
+  eixos.forEach((eixo) => {
     desenharSeta(origem, eixo.alvo, eixo.cor);
     ctx3d.fillStyle = eixo.cor;
     ctx3d.font = "13px sans-serif";
@@ -298,8 +333,14 @@ function desenharPlano3D(vetor) {
 
   ctx3d.setLineDash([6, 6]);
   ctx3d.lineWidth = 1.2;
-  ctx3d.strokeStyle = escuroAtivo ? "rgba(255, 255, 255, 0.35)" : "rgba(40, 60, 100, 0.45)";
-  [[ponto, projXY], [ponto, projXZ], [ponto, projYZ]].forEach(([a, b]) => {
+  ctx3d.strokeStyle = escuroAtivo
+    ? "rgba(255, 255, 255, 0.35)"
+    : "rgba(40, 60, 100, 0.45)";
+  [
+    [ponto, projXY],
+    [ponto, projXZ],
+    [ponto, projYZ],
+  ].forEach(([a, b]) => {
     ctx3d.beginPath();
     ctx3d.moveTo(a[0], a[1]);
     ctx3d.lineTo(b[0], b[1]);
@@ -314,7 +355,9 @@ function desenharPlano3D(vetor) {
 
   ctx3d.fillStyle = escuroAtivo ? "#ffffff" : corTexto;
   ctx3d.font = "12px sans-serif";
-  const texto = `(${dados[0].toFixed(2)}, ${dados[1].toFixed(2)}, ${dados[2].toFixed(2)})`;
+  const texto = `(${dados[0].toFixed(2)}, ${dados[1].toFixed(
+    2
+  )}, ${dados[2].toFixed(2)})`;
   const larguraTexto = ctx3d.measureText(texto).width;
   ctx3d.fillText(texto, ponto[0] - larguraTexto / 2, ponto[1] - 16);
 }
@@ -331,6 +374,7 @@ function renderParams2D() {
   limpar(params2d);
   const op = op2d.value;
 
+  // parâmetros por operação (sem a opção "Todas")
   if (op === "translate2D") {
     const dx = criaCampoNumero("dx2d", "Delta X", 1);
     const dy = criaCampoNumero("dy2d", "Delta Y", 1);
@@ -356,6 +400,7 @@ document.getElementById("aplicar2d").addEventListener("click", () => {
   const vetor = [parseFloat(x2d.value), parseFloat(y2d.value)];
   const op = op2d.value;
   let resultado;
+  let multiOutput = false;
 
   try {
     switch (op) {
@@ -363,38 +408,65 @@ document.getElementById("aplicar2d").addEventListener("click", () => {
         const dx = parseFloat(document.getElementById("dx2d").value);
         const dy = parseFloat(document.getElementById("dy2d").value);
         resultado = Tranformations.translate2D(vetor, dx, dy);
+        // Log passo-a-passo usando matriz 3x3 (coordenadas homogêneas)
+        MatrixSteps.logTranslate2D(vetor, dx, dy);
         break;
       }
       case "rotation2D": {
         const ang = parseFloat(document.getElementById("ang2d").value);
         resultado = Tranformations.rotation2D(vetor, ang);
+        MatrixSteps.logRotation2D(vetor, ang);
         break;
       }
-      case "reflection2DX":
-        resultado = Tranformations.reflection2DX(vetor);
+      case "reflection2D": {
+        // calcular e mostrar reflexões em X e Y juntas
+        const rx = Tranformations.reflection2DX(vetor);
+        MatrixSteps.logReflection2DX(vetor);
+        const ry = Tranformations.reflection2DY(vetor);
+        MatrixSteps.logReflection2DY(vetor);
+        const texto = `Reflexão X: ${formatarVetor(
+          rx
+        )}\nReflexão Y: ${formatarVetor(ry)}`;
+        saida2d.textContent = texto;
+        resultado = ry; // desenhar último resultado por consistência
+        ultimoResultado2D = resultado;
+        desenharPlano2D(ultimoResultado2D);
+        multiOutput = true;
         break;
-      case "reflection2DY":
-        resultado = Tranformations.reflection2DY(vetor);
+      }
+      case "projection2D": {
+        // calcular e mostrar projeções em X e Y juntas
+        const px = Tranformations.projection2DX(vetor);
+        MatrixSteps.logProjection2DX(vetor);
+        const py = Tranformations.projection2DY(vetor);
+        MatrixSteps.logProjection2DY(vetor);
+        const texto = `Projeção X: ${formatarVetor(
+          px
+        )}\nProjeção Y: ${formatarVetor(py)}`;
+        saida2d.textContent = texto;
+        resultado = py;
+        ultimoResultado2D = resultado;
+        desenharPlano2D(ultimoResultado2D);
+        multiOutput = true;
         break;
-      case "projection2DX":
-        resultado = Tranformations.projection2DX(vetor);
-        break;
-      case "projection2DY":
-        resultado = Tranformations.projection2DY(vetor);
-        break;
+      }
       case "shearing": {
         const kx = parseFloat(document.getElementById("kx2d").value);
         const ky = parseFloat(document.getElementById("ky2d").value);
         resultado = Tranformations.shearing(vetor, kx, ky);
+        MatrixSteps.logShearing2D(vetor, kx, ky);
         break;
       }
+
       default:
         throw new Error("Operação 2D inválida.");
     }
 
-    saida2d.textContent = formatarVetor(resultado);
-    ultimoResultado2D = resultado;
-    desenharPlano2D(ultimoResultado2D);
+    if (!multiOutput) {
+      saida2d.textContent = formatarVetor(resultado);
+      ultimoResultado2D = resultado;
+      desenharPlano2D(ultimoResultado2D);
+    }
   } catch (erro) {
     saida2d.textContent = "Erro: " + erro.message;
     ultimoResultado2D = null;
@@ -419,7 +491,11 @@ function renderParams3D() {
     const dy = criaCampoNumero("dy3d", "Delta Y", 2);
     const dz = criaCampoNumero("dz3d", "Delta Z", -1);
     params3d.append(dx.wrapper, dy.wrapper, dz.wrapper);
-  } else if (op === "rotation3DX" || op === "rotation3DY" || op === "rotation3DZ") {
+  } else if (
+    op === "rotation3DX" ||
+    op === "rotation3DY" ||
+    op === "rotation3DZ"
+  ) {
     const ang = criaCampoNumero("ang3d", "Angulo (graus)", 90);
     params3d.append(ang.wrapper);
   } else {
@@ -433,9 +509,14 @@ op3d.addEventListener("change", renderParams3D);
 renderParams3D();
 
 document.getElementById("aplicar3d").addEventListener("click", () => {
-  const vetor = [parseFloat(x3d.value), parseFloat(y3d.value), parseFloat(z3d.value)];
+  const vetor = [
+    parseFloat(x3d.value),
+    parseFloat(y3d.value),
+    parseFloat(z3d.value),
+  ];
   const op = op3d.value;
   let resultado;
+  let multiOutput3D = false;
 
   try {
     switch (op) {
@@ -444,53 +525,74 @@ document.getElementById("aplicar3d").addEventListener("click", () => {
         const dy = parseFloat(document.getElementById("dy3d").value);
         const dz = parseFloat(document.getElementById("dz3d").value);
         resultado = Tranformations.translate3D(vetor, dx, dy, dz);
+        MatrixSteps.logTranslate3D(vetor, dx, dy, dz);
         break;
       }
-      case "rotation3DX": {
+      case "rotation3D": {
         const ang = parseFloat(document.getElementById("ang3d").value);
-        resultado = Tranformations.rotation3DX(vetor, ang);
+        const rX = Tranformations.rotation3DX(vetor, ang);
+        MatrixSteps.logRotation3DX(vetor, ang);
+        const rY = Tranformations.rotation3DY(vetor, ang);
+        MatrixSteps.logRotation3DY(vetor, ang);
+        const rZ = Tranformations.rotation3DZ(vetor, ang);
+        MatrixSteps.logRotation3DZ(vetor, ang);
+        const texto = `Rotação X: ${formatarVetor(
+          rX
+        )}\nRotação Y: ${formatarVetor(rY)}\nRotação Z: ${formatarVetor(rZ)}`;
+        saida3d.textContent = texto;
+        resultado = rZ;
+        ultimoResultado3D = resultado;
+        desenharPlano3D(ultimoResultado3D);
+        multiOutput3D = true;
         break;
       }
-      case "rotation3DY": {
-        const ang = parseFloat(document.getElementById("ang3d").value);
-        resultado = Tranformations.rotation3DY(vetor, ang);
+      case "reflection3D": {
+        const rx = Tranformations.reflection3DX(vetor);
+        MatrixSteps.logReflection3DX(vetor);
+        const ry = Tranformations.reflection3DY(vetor);
+        MatrixSteps.logReflection3DY(vetor);
+        const rz = Tranformations.reflection3DZ(vetor);
+        MatrixSteps.logReflection3DZ(vetor);
+        const texto = `Reflexão X: ${formatarVetor(
+          rx
+        )}\nReflexão Y: ${formatarVetor(ry)}\nReflexão Z: ${formatarVetor(rz)}`;
+        saida3d.textContent = texto;
+        resultado = rz;
+        ultimoResultado3D = resultado;
+        desenharPlano3D(ultimoResultado3D);
+        multiOutput3D = true;
         break;
       }
-      case "rotation3DZ": {
-        const ang = parseFloat(document.getElementById("ang3d").value);
-        resultado = Tranformations.rotation3DZ(vetor, ang);
+      case "projection3D": {
+        const px = Tranformations.projection3DX(vetor);
+        MatrixSteps.logProjection3DX(vetor);
+        const py = Tranformations.projection3DY(vetor);
+        MatrixSteps.logProjection3DY(vetor);
+        const pz = Tranformations.projection3DZ(vetor);
+        MatrixSteps.logProjection3DZ(vetor);
+        const texto = `Projeção X: ${formatarVetor(
+          px
+        )}\nProjeção Y: ${formatarVetor(py)}\nProjeção Z: ${formatarVetor(pz)}`;
+        saida3d.textContent = texto;
+        resultado = pz;
+        ultimoResultado3D = resultado;
+        desenharPlano3D(ultimoResultado3D);
+        multiOutput3D = true;
         break;
       }
-      case "reflection3DX":
-        resultado = Tranformations.reflection3DX(vetor);
-        break;
-      case "reflection3DY":
-        resultado = Tranformations.reflection3DY(vetor);
-        break;
-      case "reflection3DZ":
-        resultado = Tranformations.reflection3DZ(vetor);
-        break;
-      case "projection3DX":
-        resultado = Tranformations.projection3DX(vetor);
-        break;
-      case "projection3DY":
-        resultado = Tranformations.projection3DY(vetor);
-        break;
-      case "projection3DZ":
-        resultado = Tranformations.projection3DZ(vetor);
-        break;
+
       default:
         throw new Error("Operação 3D inválida.");
     }
 
-    saida3d.textContent = formatarVetor(resultado);
-    ultimoResultado3D = resultado;
-    desenharPlano3D(ultimoResultado3D);
+    if (!multiOutput3D) {
+      saida3d.textContent = formatarVetor(resultado);
+      ultimoResultado3D = resultado;
+      desenharPlano3D(ultimoResultado3D);
+    }
   } catch (erro) {
     saida3d.textContent = "Erro: " + erro.message;
     ultimoResultado3D = null;
     desenharPlano3D(ultimoResultado3D);
   }
 });
-
-

@@ -1,0 +1,60 @@
+🧮 Operações 3D – Explicação Matemática Simples
+Translação (3D)
+
+A translação em 3D desloca um ponto no espaço em três direções: para os lados (eixo X), para cima ou para baixo (eixo Y) e para frente ou para trás (eixo Z).
+Matematicamente, isso é feito somando um valor fixo a cada uma das três coordenadas do ponto.
+Essa operação muda apenas a posição do ponto, mantendo o formato e o tamanho do objeto.
+
+Rotação em torno do eixo X
+
+Essa rotação faz o ponto girar em volta do eixo X, como se o eixo X fosse uma haste que atravessa o espaço.
+Enquanto o valor de X permanece igual, os valores de Y e Z giram, trocando de posição de forma controlada pelos ângulos de rotação.
+Essa operação é usada para inclinar objetos para frente ou para trás.
+
+Rotação em torno do eixo Y
+
+Aqui o ponto gira em torno do eixo Y, que é o eixo vertical que atravessa o espaço de cima a baixo.
+O valor de Y permanece o mesmo, mas os valores de X e Z mudam de acordo com o ângulo de rotação.
+Essa transformação faz o objeto girar para os lados, como uma porta abrindo.
+
+Rotação em torno do eixo Z
+
+Nessa rotação, o ponto gira em torno do eixo Z, que atravessa o plano de dentro para fora da tela.
+O valor de Z permanece fixo, e as coordenadas X e Y mudam.
+É o mesmo tipo de rotação que usamos em 2D, mas agora aplicada dentro do espaço tridimensional.
+
+Reflexão em relação ao eixo X
+
+A reflexão no eixo X espelha o ponto em relação a esse eixo, como se o eixo X fosse um espelho.
+Os valores de Y e Z mudam de sinal, enquanto o X permanece o mesmo.
+O resultado é o ponto aparecendo do outro lado do eixo, na posição oposta.
+
+Reflexão em relação ao eixo Y
+
+Aqui o ponto é refletido em relação ao eixo Y.
+O valor de Y permanece igual, e os valores de X e Z mudam de sinal.
+O ponto aparece do lado contrário em relação ao eixo vertical do espaço.
+
+Reflexão em relação ao eixo Z
+
+A reflexão no eixo Z inverte o ponto em relação ao eixo que vai para dentro e para fora da tela.
+O valor de Z continua o mesmo, mas os valores de X e Y mudam de sinal.
+É como se o ponto fosse espelhado no plano formado pelos eixos X e Y.
+
+Projeção no eixo X
+
+Na projeção no eixo X, apenas o valor de X é mantido.
+Os valores de Y e Z se tornam zero, fazendo o ponto “cair” sobre o eixo X.
+Isso é útil para representar sombras ou vistas laterais em modelos 3D.
+
+Projeção no eixo Y
+
+Aqui o valor de Y é mantido, e os valores de X e Z se tornam zero.
+O ponto é projetado sobre o eixo Y, como se fosse uma sombra no eixo vertical.
+Essa projeção é usada para ver a posição do ponto apenas em função da altura.
+
+Projeção no eixo Z
+
+Na projeção no eixo Z, o valor de Z é mantido e os valores de X e Y se tornam zero.
+O ponto é lançado sobre o eixo Z, que representa a profundidade.
+Essa operação é usada para mostrar o quanto o ponto está afastado ou próximo do observador.
