@@ -1,5 +1,4 @@
-// src/algebra/Matrix3.js
-// Matriz 3×3 para coordenadas homogêneas em 2D.
+// Matriz 3x3 para coordenadas homogeneas em 2D.
 export class Matrix3 {
   constructor(values) {
     if (!Array.isArray(values) || values.length !== 9) {
@@ -31,7 +30,7 @@ export class Matrix3 {
     return new Matrix3(r);
   }
 
-  // Aplica a matriz a um vetor cartesiano 2D (usa homogêneas internamente).
+  // Aplica a matriz em vetor 2D utilizando coordenadas homogeneas.
   aplicarEmVetor2([x, y]) {
     const m = this.m;
     const X = m[0]*x + m[1]*y + m[2]*1;

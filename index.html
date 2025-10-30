@@ -104,10 +104,9 @@
       color: #0f224c;
       box-shadow: var(--sombra-leve);
       cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      transition: box-shadow 0.2s ease, background 0.2s ease;
     }
     #toggle-tema:hover {
-      transform: translateY(0);
       box-shadow: 0 16px 32px rgba(86, 122, 201, 0.26);
       color: #ffffff;
     }
@@ -120,7 +119,7 @@
       display: flex;
       flex-direction: column;
       gap: 22px;
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      transition: box-shadow 0.25s ease;
     }
     .card:hover {
       box-shadow: 0 28px 58px rgba(82, 118, 198, 0.2);
@@ -326,19 +325,19 @@
         <div class="campo">
           <label for="op2d">Operação</label>
           <select id="op2d">
-            <option value="Transladar2D">Translação (2D)</option>
-            <option value="Rotacionar2D" selected>Rotação (2D)</option>
-            <option value="Refletir2DEixoX">Reflexão no eixo X</option>
-            <option value="Refletir2DEixoY">Reflexão no eixo Y</option>
-            <option value="Projetar2DEixoX">Projeção no eixo X</option>
-            <option value="Projetar2DEixoY">Projeção no eixo Y</option>
-            <option value="Cisalhar2D">Cisalhamento (2D)</option>
+            <option value="translate2D">Translação (2D)</option>
+            <option value="roration2D" selected>Rotação (2D)</option>
+            <option value="reflection2DX">Reflexão no eixo X</option>
+            <option value="reflection2DY">Reflexão no eixo Y</option>
+            <option value="projection2DX">Projeção no eixo X</option>
+            <option value="projection2DY">Projeção no eixo Y</option>
+            <option value="shearing">Cisalhamento (2D)</option>
           </select>
         </div>
       </div>
 
       <div id="params2d" class="linha linha-campos">
-        <!-- parâmetros variáveis aparecem aqui -->
+        <!-- Parâmetros 2D são injetados aqui -->
       </div>
 
       <button class="botao-primario" id="aplicar2d">Aplicar</button>
@@ -372,22 +371,22 @@
         <div class="campo">
           <label for="op3d">Operação</label>
           <select id="op3d">
-            <option value="Transladar3D">Translação (3D)</option>
-            <option value="Rotacionar3DEixoX">Rotação em torno do eixo X</option>
-            <option value="Rotacionar3DEixoY">Rotação em torno do eixo Y</option>
-            <option value="Rotacionar3DEixoZ" selected>Rotação em torno do eixo Z</option>
-            <option value="Refletir3DEixoX">Reflexão em relação ao eixo X</option>
-            <option value="Refletir3DEixoY">Reflexão em relação ao eixo Y</option>
-            <option value="Refletir3DEixoZ">Reflexão em relação ao eixo Z</option>
-            <option value="Projetar3DEixoX">Projeção no eixo X</option>
-            <option value="Projetar3DEixoY">Projeção no eixo Y</option>
-            <option value="Projetar3DEixoZ">Projeção no eixo Z</option>
+            <option value="translate3D">Translação (3D)</option>
+            <option value="rotation3DX">Rotação em torno do eixo X</option>
+            <option value="rotation3DY">Rotação em torno do eixo Y</option>
+            <option value="rotation3DZ" selected>Rotação em torno do eixo Z</option>
+            <option value="reflection3DX">Reflexão em relação ao eixo X</option>
+            <option value="reflection3DY">Reflexão em relação ao eixo Y</option>
+            <option value="reflection3DZ">Reflexão em relação ao eixo Z</option>
+            <option value="projection3DX">Projeção no eixo X</option>
+            <option value="projection3DY">Projeção no eixo Y</option>
+            <option value="projection3DZ">Projeção no eixo Z</option>
           </select>
         </div>
       </div>
 
       <div id="params3d" class="linha linha-campos">
-        <!-- parâmetros variáveis aparecem aqui -->
+        <!-- Parâmetros 3D são injetados aqui -->
       </div>
 
       <button class="botao-primario" id="aplicar3d">Aplicar</button>

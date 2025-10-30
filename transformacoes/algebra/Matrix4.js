@@ -1,5 +1,4 @@
-// src/algebra/Matrix4.js
-// Matriz 4×4 para coordenadas homogêneas em 3D.
+// Matriz 4x4 para coordenadas homogeneas em 3D.
 export class Matrix4 {
   constructor(values) {
     if (!Array.isArray(values) || values.length !== 16) {
@@ -32,7 +31,7 @@ export class Matrix4 {
     return new Matrix4(r);
   }
 
-  // Aplica a matriz a um vetor cartesiano 3D (usa homogêneas internamente).
+  // Aplica a matriz em vetor 3D utilizando coordenadas homogeneas.
   aplicarEmVetor3([x, y, z]) {
     const m = this.m;
     const X = m[0]*x + m[1]*y + m[2]*z + m[3]*1;

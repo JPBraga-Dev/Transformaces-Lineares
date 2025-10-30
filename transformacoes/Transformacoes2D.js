@@ -1,11 +1,11 @@
-// src/Transformacoes2D.js
-// Transformações 2D com coordenadas homogêneas (matriz 3×3).
+// Utilidades 2D em coordenadas homogeneas (matriz 3x3).
 
 import { Matrix3 } from "./algebra/Matrix3.js";
-import { GrausParaRadianos } from "./utils.js";
+
+const grausParaRadianos = anguloGraus => (anguloGraus * Math.PI) / 180;
 
 export class Transformacoes2D {
-  // Translação
+  // Matriz de translacao basica.
   static Transladar2D([x, y], dx, dy) {
     const T = new Matrix3([
       1, 0, dx,
@@ -15,9 +15,9 @@ export class Transformacoes2D {
     return T.aplicarEmVetor2([x, y]);
   }
 
-  // Rotação anti-horária (graus)
+  // Rotacao anti-horaria em graus.
   static Rotacionar2D([x, y], anguloGraus) {
-    const t = GrausParaRadianos(anguloGraus);
+    const t = grausParaRadianos(anguloGraus);
     const c = Math.cos(t), s = Math.sin(t);
     const R = new Matrix3([
        c, -s, 0,
@@ -27,7 +27,7 @@ export class Transformacoes2D {
     return R.aplicarEmVetor2([x, y]);
   }
 
-  // Reflexões
+  // Reflexoes nos eixos principais.
   static Refletir2DEixoX([x, y]) {
     const M = new Matrix3([
       1, 0, 0,
@@ -46,7 +46,7 @@ export class Transformacoes2D {
     return M.aplicarEmVetor2([x, y]);
   }
 
-  // Projeções (no eixo)
+  // Projecoes que zeram um dos eixos.
   static Projetar2DEixoX([x, y]) {
     const P = new Matrix3([
       1, 0, 0,
@@ -65,7 +65,7 @@ export class Transformacoes2D {
     return P.aplicarEmVetor2([x, y]);
   }
 
-  // Cisalhamento (shear)
+  // Cisalhamento simples com kx e ky.
   static Cisalhar2D([x, y], kx = 0, ky = 0) {
     const S = new Matrix3([
       1, kx, 0,

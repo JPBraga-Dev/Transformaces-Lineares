@@ -1,53 +1,66 @@
-// main.js
-// Controller da interface.
+// Arquivo principal da interface.
 
-import { Transformacoes2D } from "./transformacoes/Transformacoes2D.js";
-import { Transformacoes3D } from "./transformacoes/Transformacoes3D.js";
+import { Tranformations } from "./transformation/transformation.js";
 
-// ===== Tema (claro/escuro)
+// Alternância de tema claro/escuro.
 const body = document.body;
 const toggleTemaBtn = document.getElementById("toggle-tema");
+
 function atualizaTextoTema() {
   const escuroAtivo = body.classList.contains("modo-escuro");
   toggleTemaBtn.textContent = escuroAtivo ? "Modo claro" : "Modo escuro";
 }
+
 toggleTemaBtn.addEventListener("click", () => {
   body.classList.toggle("modo-escuro");
   atualizaTextoTema();
 });
+
 atualizaTextoTema();
 
-// ===== Tabs simples (2D/3D)
+// Controle das abas 2D e 3D.
 const tabBtns = document.querySelectorAll(".tab-btn");
 tabBtns.forEach(btn => {
   btn.addEventListener("click", () => {
     tabBtns.forEach(b => b.classList.remove("ativo"));
     btn.classList.add("ativo");
-    document.querySelectorAll("section.card").forEach(sec => sec.style.display = "none");
+    document.querySelectorAll("section.card").forEach(sec => {
+      sec.style.display = "none";
+    });
     document.querySelector(btn.dataset.alvo).style.display = "block";
   });
 });
 
-// ===== Helpers
-function criaInputNumero(id, label, valor = 0, step = "any") {
-  const wrap = document.createElement("div");
-  wrap.className = "linha";
+// Funções auxiliares para montar inputs.
+function criaCampoNumero(id, label, valor = 0, step = "any") {
+  const wrapper = document.createElement("div");
+  wrapper.className = "campo";
+
   const lab = document.createElement("label");
-  lab.textContent = label + ":";
+  lab.textContent = label;
   lab.setAttribute("for", id);
-  const inp = document.createElement("input");
-  inp.type = "number";
-  inp.step = step;
-  inp.value = valor;
-  inp.id = id;
-  wrap.appendChild(lab);
-  wrap.appendChild(inp);
-  return { wrap, input: inp };
+
+  const input = document.createElement("input");
+  input.type = "number";
+  input.step = step;
+  input.value = valor;
+  input.id = id;
+
+  wrapper.append(lab, input);
+  return { wrapper, input };
 }
 
-function limpar(el) { while (el.firstChild) el.removeChild(el.firstChild); }
+function limpar(elemento) {
+  while (elemento.firstChild) {
+    elemento.removeChild(elemento.firstChild);
+  }
+}
 
-// ===== Painel 2D
+function formatarVetor(resultado) {
+  return `[ ${resultado.map(n => Number(n.toFixed(6))).join(", ")} ]`;
+}
+
+// Fluxo específico do painel 2D.
 const x2d = document.getElementById("x2d");
 const y2d = document.getElementById("y2d");
 const op2d = document.getElementById("op2d");
@@ -57,66 +70,75 @@ const saida2d = document.getElementById("saida2d");
 function renderParams2D() {
   limpar(params2d);
   const op = op2d.value;
-  if (op === "Transladar2D") {
-    const dx = criaInputNumero("dx2d", "dx", 1);
-    const dy = criaInputNumero("dy2d", "dy", 1);
-    params2d.append(dx.wrap, dy.wrap);
-  } else if (op === "Rotacionar2D") {
-    const ang = criaInputNumero("ang2d", "Ângulo (graus)", 45);
-    params2d.append(ang.wrap);
-  } else if (op === "Cisalhar2D") {
-    const kx = criaInputNumero("kx2d", "kx", 1);
-    const ky = criaInputNumero("ky2d", "ky", 0);
-    params2d.append(kx.wrap, ky.wrap);
+
+  if (op === "translate2D") {
+    const dx = criaCampoNumero("dx2d", "Δx", 1);
+    const dy = criaCampoNumero("dy2d", "Δy", 1);
+    params2d.append(dx.wrapper, dy.wrapper);
+  } else if (op === "roration2D") {
+    const ang = criaCampoNumero("ang2d", "Ângulo (graus)", 45);
+    params2d.append(ang.wrapper);
+  } else if (op === "shearing") {
+    const kx = criaCampoNumero("kx2d", "Fator kx", 1);
+    const ky = criaCampoNumero("ky2d", "Fator ky", 0);
+    params2d.append(kx.wrapper, ky.wrapper);
   } else {
     const dica = document.createElement("small");
-    dica.textContent = "Sem parâmetros.";
+    dica.textContent = "Sem parâmetros adicionais.";
     params2d.appendChild(dica);
   }
 }
+
 op2d.addEventListener("change", renderParams2D);
 renderParams2D();
 
 document.getElementById("aplicar2d").addEventListener("click", () => {
-  const v = [parseFloat(x2d.value), parseFloat(y2d.value)];
+  const vetor = [parseFloat(x2d.value), parseFloat(y2d.value)];
   const op = op2d.value;
-  let res;
+  let resultado;
+
   try {
     switch (op) {
-      case "Transladar2D": {
+      case "translate2D": {
         const dx = parseFloat(document.getElementById("dx2d").value);
         const dy = parseFloat(document.getElementById("dy2d").value);
-        res = Transformacoes2D.Transladar2D(v, dx, dy);
+        resultado = Tranformations.translate2D(vetor, dx, dy);
         break;
       }
-      case "Rotacionar2D": {
+      case "roration2D": {
         const ang = parseFloat(document.getElementById("ang2d").value);
-        res = Transformacoes2D.Rotacionar2D(v, ang);
+        resultado = Tranformations.roration2D(vetor, ang);
         break;
       }
-      case "Refletir2DEixoX":
-        res = Transformacoes2D.Refletir2DEixoX(v); break;
-      case "Refletir2DEixoY":
-        res = Transformacoes2D.Refletir2DEixoY(v); break;
-      case "Projetar2DEixoX":
-        res = Transformacoes2D.Projetar2DEixoX(v); break;
-      case "Projetar2DEixoY":
-        res = Transformacoes2D.Projetar2DEixoY(v); break;
-      case "Cisalhar2D": {
+      case "reflection2DX":
+        resultado = Tranformations.reflection2DX(vetor);
+        break;
+      case "reflection2DY":
+        resultado = Tranformations.reflection2DY(vetor);
+        break;
+      case "projection2DX":
+        resultado = Tranformations.projection2DX(vetor);
+        break;
+      case "projection2DY":
+        resultado = Tranformations.projection2DY(vetor);
+        break;
+      case "shearing": {
         const kx = parseFloat(document.getElementById("kx2d").value);
         const ky = parseFloat(document.getElementById("ky2d").value);
-        res = Transformacoes2D.Cisalhar2D(v, kx, ky);
+        resultado = Tranformations.shearing(vetor, kx, ky);
         break;
       }
-      default: throw new Error("Operação 2D inválida.");
+      default:
+        throw new Error("Operação 2D inválida.");
     }
-    saida2d.textContent = `[ ${res.map(n => Number(n.toFixed(6))).join(", ")} ]`;
-  } catch (e) {
-    saida2d.textContent = "Erro: " + e.message;
+
+    saida2d.textContent = formatarVetor(resultado);
+  } catch (erro) {
+    saida2d.textContent = "Erro: " + erro.message;
   }
 });
 
-// ===== Painel 3D
+// Fluxo específico do painel 3D.
 const x3d = document.getElementById("x3d");
 const y3d = document.getElementById("y3d");
 const z3d = document.getElementById("z3d");
@@ -127,67 +149,78 @@ const saida3d = document.getElementById("saida3d");
 function renderParams3D() {
   limpar(params3d);
   const op = op3d.value;
-  if (op === "Transladar3D") {
-    const dx = criaInputNumero("dx3d", "dx", 1);
-    const dy = criaInputNumero("dy3d", "dy", 2);
-    const dz = criaInputNumero("dz3d", "dz", -1);
-    params3d.append(dx.wrap, dy.wrap, dz.wrap);
-  } else if (op.startsWith("Rotacionar3DEixo")) {
-    const ang = criaInputNumero("ang3d", "Ângulo (graus)", 90);
-    params3d.append(ang.wrap);
+
+  if (op === "translate3D") {
+    const dx = criaCampoNumero("dx3d", "Δx", 1);
+    const dy = criaCampoNumero("dy3d", "Δy", 2);
+    const dz = criaCampoNumero("dz3d", "Δz", -1);
+    params3d.append(dx.wrapper, dy.wrapper, dz.wrapper);
+  } else if (op === "rotation3DX" || op === "rotation3DY" || op === "rotation3DZ") {
+    const ang = criaCampoNumero("ang3d", "Ângulo (graus)", 90);
+    params3d.append(ang.wrapper);
   } else {
     const dica = document.createElement("small");
-    dica.textContent = "Sem parâmetros.";
+    dica.textContent = "Sem parâmetros adicionais.";
     params3d.appendChild(dica);
   }
 }
+
 op3d.addEventListener("change", renderParams3D);
 renderParams3D();
 
 document.getElementById("aplicar3d").addEventListener("click", () => {
-  const v = [parseFloat(x3d.value), parseFloat(y3d.value), parseFloat(z3d.value)];
+  const vetor = [parseFloat(x3d.value), parseFloat(y3d.value), parseFloat(z3d.value)];
   const op = op3d.value;
-  let res;
+  let resultado;
+
   try {
     switch (op) {
-      case "Transladar3D": {
+      case "translate3D": {
         const dx = parseFloat(document.getElementById("dx3d").value);
         const dy = parseFloat(document.getElementById("dy3d").value);
         const dz = parseFloat(document.getElementById("dz3d").value);
-        res = Transformacoes3D.Transladar3D(v, dx, dy, dz);
+        resultado = Tranformations.translate3D(vetor, dx, dy, dz);
         break;
       }
-      case "Rotacionar3DEixoX": {
+      case "rotation3DX": {
         const ang = parseFloat(document.getElementById("ang3d").value);
-        res = Transformacoes3D.Rotacionar3DEixoX(v, ang);
+        resultado = Tranformations.rotation3DX(vetor, ang);
         break;
       }
-      case "Rotacionar3DEixoY": {
+      case "rotation3DY": {
         const ang = parseFloat(document.getElementById("ang3d").value);
-        res = Transformacoes3D.Rotacionar3DEixoY(v, ang);
+        resultado = Tranformations.rotation3DY(vetor, ang);
         break;
       }
-      case "Rotacionar3DEixoZ": {
+      case "rotation3DZ": {
         const ang = parseFloat(document.getElementById("ang3d").value);
-        res = Transformacoes3D.Rotacionar3DEixoZ(v, ang);
+        resultado = Tranformations.rotation3DZ(vetor, ang);
         break;
       }
-      case "Refletir3DEixoX":
-        res = Transformacoes3D.Refletir3DEixoX(v); break;
-      case "Refletir3DEixoY":
-        res = Transformacoes3D.Refletir3DEixoY(v); break;
-      case "Refletir3DEixoZ":
-        res = Transformacoes3D.Refletir3DEixoZ(v); break;
-      case "Projetar3DEixoX":
-        res = Transformacoes3D.Projetar3DEixoX(v); break;
-      case "Projetar3DEixoY":
-        res = Transformacoes3D.Projetar3DEixoY(v); break;
-      case "Projetar3DEixoZ":
-        res = Transformacoes3D.Projetar3DEixoZ(v); break;
-      default: throw new Error("Operação 3D inválida.");
+      case "reflection3DX":
+        resultado = Tranformations.reflection3DX(vetor);
+        break;
+      case "reflection3DY":
+        resultado = Tranformations.reflection3DY(vetor);
+        break;
+      case "reflection3DZ":
+        resultado = Tranformations.reflection3DZ(vetor);
+        break;
+      case "projection3DX":
+        resultado = Tranformations.projection3DX(vetor);
+        break;
+      case "projection3DY":
+        resultado = Tranformations.projection3DY(vetor);
+        break;
+      case "projection3DZ":
+        resultado = Tranformations.projection3DZ(vetor);
+        break;
+      default:
+        throw new Error("Operação 3D inválida.");
     }
-    saida3d.textContent = `[ ${res.map(n => Number(n.toFixed(6))).join(", ")} ]`;
-  } catch (e) {
-    saida3d.textContent = "Erro: " + e.message;
+
+    saida3d.textContent = formatarVetor(resultado);
+  } catch (erro) {
+    saida3d.textContent = "Erro: " + erro.message;
   }
 });

@@ -1,11 +1,11 @@
-// src/Transformacoes3D.js
-// Transformações 3D com coordenadas homogêneas (matriz 4×4).
+// Utilidades 3D em coordenadas homogeneas (matriz 4x4).
 
 import { Matrix4 } from "./algebra/Matrix4.js";
-import { GrausParaRadianos } from "./utils.js";
+
+const grausParaRadianos = anguloGraus => (anguloGraus * Math.PI) / 180;
 
 export class Transformacoes3D {
-  // Translação
+  // Translacao simples em 3D.
   static Transladar3D([x, y, z], dx, dy, dz) {
     const T = new Matrix4([
       1,0,0,dx,
@@ -16,9 +16,9 @@ export class Transformacoes3D {
     return T.aplicarEmVetor3([x, y, z]);
   }
 
-  // Rotações (graus, anti-horário, mão direita)
+  // Rotacoes nos eixos principais (graus).
   static Rotacionar3DEixoX([x, y, z], anguloGraus) {
-    const t = GrausParaRadianos(anguloGraus);
+    const t = grausParaRadianos(anguloGraus);
     const c = Math.cos(t), s = Math.sin(t);
     const R = new Matrix4([
       1, 0, 0, 0,
@@ -30,7 +30,7 @@ export class Transformacoes3D {
   }
 
   static Rotacionar3DEixoY([x, y, z], anguloGraus) {
-    const t = GrausParaRadianos(anguloGraus);
+    const t = grausParaRadianos(anguloGraus);
     const c = Math.cos(t), s = Math.sin(t);
     const R = new Matrix4([
        c, 0, s, 0,
@@ -42,7 +42,7 @@ export class Transformacoes3D {
   }
 
   static Rotacionar3DEixoZ([x, y, z], anguloGraus) {
-    const t = GrausParaRadianos(anguloGraus);
+    const t = grausParaRadianos(anguloGraus);
     const c = Math.cos(t), s = Math.sin(t);
     const R = new Matrix4([
        c,-s, 0, 0,
@@ -53,7 +53,7 @@ export class Transformacoes3D {
     return R.aplicarEmVetor3([x, y, z]);
   }
 
-  // Reflexões
+  // Reflexoes nos planos coordenados.
   static Refletir3DEixoX([x, y, z]) {
     const M = new Matrix4([
      -1, 0, 0, 0,
@@ -84,7 +84,7 @@ export class Transformacoes3D {
     return M.aplicarEmVetor3([x, y, z]);
   }
 
-  // Projeções "no eixo": mantém apenas o componente daquele eixo
+  // Projecoes que preservam apenas um eixo.
   static Projetar3DEixoX([x, y, z]) {
     const Mask = new Matrix4([
       1,0,0,0,
