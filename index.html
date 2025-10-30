@@ -1,170 +1,403 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
   <title>Transformações Lineares 2D/3D</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    /* CSS mínimo */
     :root {
-      font-family: system-ui, Arial, sans-serif;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
       color-scheme: light;
+      --azul-base: #9fbdf7;
+      --azul-destaque: #6f95ef;
+      --azul-claro: #e6eeff;
+      --azul-hover: #5a7edd;
+      --cinza-fundo: #f6f8ff;
+      --cinza-card: #ffffff;
+      --cinza-borda: #dde5ff;
+      --texto-principal: #1f2d44;
+      --texto-secundario: #4e5c76;
+      --sombra-card: 0 22px 48px rgba(91, 123, 193, 0.18);
+      --sombra-leve: 0 12px 24px rgba(120, 150, 214, 0.18);
+      --raio: 20px;
     }
     body {
-      margin: 24px;
-      background: #ffffff;
-      color: #1a1a1a;
-      transition: background 0.3s ease, color 0.3s ease;
+      margin: 0;
+      padding: 56px 24px 72px;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #f9fbff 0%, #eef3ff 45%, #f6f9ff 100%);
+      color: var(--texto-principal);
+      transition: background 0.35s ease, color 0.35s ease;
+      line-height: 1.6;
     }
-    h1 { margin-bottom: 8px; }
+    .layout {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
     .topo {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
-      gap: 16px;
+      gap: 20px;
       flex-wrap: wrap;
-      margin-bottom: 12px;
+      padding: 26px 32px;
+      border-radius: var(--raio);
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid var(--cinza-borda);
+      box-shadow: var(--sombra-card);
+      backdrop-filter: blur(6px);
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-size: clamp(1.9rem, 2.2vw, 2.25rem);
+      letter-spacing: 0.01em;
+      color: #162541;
+    }
+    .subtitulo {
+      margin: 0;
+      font-size: 0.97rem;
+      color: var(--texto-secundario);
+      max-width: 480px;
+    }
+    .tabs {
+      display: inline-flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 6px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid var(--cinza-borda);
+      box-shadow: var(--sombra-leve);
+      width: max-content;
+    }
+    .tab-btn {
+      min-width: 72px;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 18px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      background: transparent;
+      color: var(--texto-principal);
+      transition: background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+      cursor: pointer;
+    }
+    .tab-btn:hover {
+      background: var(--azul-claro);
+      color: #254081;
+    }
+    .tab-btn.ativo {
+      background: linear-gradient(115deg, var(--azul-base) 0%, var(--azul-destaque) 100%);
+      color: #ffffff;
+      box-shadow: var(--sombra-leve);
+    }
+    #toggle-tema {
+      border: none;
+      border-radius: 16px;
+      padding: 10px 26px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      background: linear-gradient(115deg, var(--azul-base) 0%, var(--azul-destaque) 100%);
+      color: #0f224c;
+      box-shadow: var(--sombra-leve);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+    #toggle-tema:hover {
+      transform: translateY(0);
+      box-shadow: 0 16px 32px rgba(86, 122, 201, 0.26);
+      color: #ffffff;
     }
     .card {
-      border: 1px solid #ddd; border-radius: 10px; padding: 16px; margin-top: 12px;
-      background: rgba(255, 255, 255, 0.92);
-      transition: background 0.3s ease, border-color 0.3s ease;
+      border-radius: var(--raio);
+      padding: 32px;
+      background: var(--cinza-card);
+      border: 1px solid var(--cinza-borda);
+      box-shadow: var(--sombra-card);
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
     }
-    .linha { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
-    label { font-size: 14px; display: inline-block; min-width: 120px; }
-    input, select, button {
-      padding: 8px; border: 1px solid #ccc; border-radius: 6px;
-      transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    .card:hover {
+      box-shadow: 0 28px 58px rgba(82, 118, 198, 0.2);
     }
-    button { cursor: pointer; }
-    .tabs { display: flex; gap: 8px; margin-top: 8px; }
-    .tab-btn { border: 1px solid #ccc; background: #f7f7f7; }
-    .tab-btn.ativo { background: #eaeaea; font-weight: 600; }
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    h2 {
+      margin: 0;
+      font-size: 1.35rem;
+      color: #152b53;
+    }
+    .linha {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    .linha:last-of-type {
+      margin-bottom: 0;
+    }
+    .linha-campos {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+    .campo {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    label {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: #23365c;
+    }
+    input,
+    select,
+    button {
+      font-size: 0.98rem;
+      padding: 11px 14px;
+      border-radius: 14px;
+      border: 1px solid #c9d6fa;
+      background: #ffffff;
+      color: var(--texto-principal);
+      transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+    }
+    input:focus,
+    select:focus {
+      border-color: var(--azul-destaque);
+      box-shadow: 0 0 0 3px rgba(111, 149, 239, 0.35);
+      outline: none;
+    }
+    .botao-primario {
+      align-self: flex-start;
+      background: linear-gradient(120deg, var(--azul-base) 0%, var(--azul-destaque) 100%);
+      border-color: transparent;
+      color: #0f224c;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: var(--sombra-leve);
+      margin-top: 16px;
+      margin-bottom: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .botao-primario:hover {
+      background: linear-gradient(120deg, var(--azul-destaque) 0%, var(--azul-hover) 100%);
+      color: #ffffff;
+      box-shadow: 0 18px 36px rgba(74, 109, 196, 0.28);
+    }
     .saida {
-      background: #f8f8f8; border: 1px dashed #cfcfcf; padding: 12px; border-radius: 8px;
-      transition: background 0.3s ease, border-color 0.3s ease;
+      background: rgba(240, 246, 255, 0.88);
+      border: 1px dashed rgba(124, 150, 209, 0.45);
+      padding: 20px;
+      border-radius: 16px;
+      color: var(--texto-principal);
     }
-    small { color: #666; transition: color 0.3s ease; }
+    pre {
+      margin: 8px 0 0;
+      font-size: 0.95rem;
+      color: inherit;
+    }
+    small {
+      color: var(--texto-secundario);
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 32px 16px 48px;
+      }
+      .card {
+        padding: 24px;
+      }
+      #toggle-tema {
+        width: 100%;
+      }
+    }
 
     body.modo-escuro {
-      background: #071530; /* azul marinho mais profundo */
-      color: #e8efff;
+      background: radial-gradient(circle at 20% 20%, #1a2642 0%, #121c33 60%, #0d1527 100%);
+      color: #e6edff;
       color-scheme: dark;
     }
+    body.modo-escuro .topo {
+      background: rgba(19, 33, 58, 0.78);
+      border-color: rgba(125, 155, 230, 0.35);
+      box-shadow: 0 28px 55px rgba(7, 11, 21, 0.55);
+    }
+    body.modo-escuro h1 {
+      color: #d8e5ff;
+    }
+    body.modo-escuro .subtitulo {
+      color: #aab9e9;
+    }
+    body.modo-escuro .tabs {
+      background: rgba(25, 40, 69, 0.86);
+      border-color: rgba(125, 155, 230, 0.35);
+    }
+    body.modo-escuro .tab-btn {
+      color: #d3dcff;
+    }
+    body.modo-escuro .tab-btn:hover {
+      background: rgba(110, 144, 222, 0.28);
+      color: #ffffff;
+    }
+    body.modo-escuro .tab-btn.ativo {
+      background: linear-gradient(125deg, #8eb2ff 0%, #5e82d8 100%);
+      color: #ffffff;
+      box-shadow: 0 20px 42px rgba(4, 10, 27, 0.55);
+    }
+    body.modo-escuro #toggle-tema {
+      background: linear-gradient(125deg, #8eb2ff 0%, #5c80d6 100%);
+      color: #0a162f;
+    }
     body.modo-escuro .card {
-      background: rgba(12, 32, 68, 0.9);
-      border-color: #1f3c79;
+      background: rgba(21, 33, 56, 0.9);
+      border-color: rgba(125, 155, 230, 0.3);
+      box-shadow: 0 32px 60px rgba(5, 9, 20, 0.65);
+    }
+    body.modo-escuro h2 {
+      color: #f4f7ff;
+    }
+    body.modo-escuro label {
+      color: #dbe6ff;
     }
     body.modo-escuro input,
-    body.modo-escuro select,
-    body.modo-escuro button {
-      background: #142a55;
-      color: #e8efff;
-      border-color: #274a8b;
+    body.modo-escuro select {
+      background: rgba(23, 38, 66, 0.92);
+      border-color: rgba(132, 159, 233, 0.4);
+      color: #e7edff;
     }
-    body.modo-escuro .tab-btn { background: #1f3764; }
-    body.modo-escuro .tab-btn.ativo { background: #1c427a; }
+    body.modo-escuro input:focus,
+    body.modo-escuro select:focus {
+      box-shadow: 0 0 0 3px rgba(140, 175, 255, 0.38);
+    }
+    body.modo-escuro .botao-primario {
+      background: linear-gradient(125deg, #8eb2ff 0%, #5e82d8 100%);
+      color: #0a162f;
+    }
+    body.modo-escuro .botao-primario:hover {
+      color: #f7f9ff;
+    }
     body.modo-escuro .saida {
-      background: rgba(10, 22, 48, 0.85);
-      border-color: #23407d;
+      background: rgba(18, 30, 52, 0.88);
+      border-color: rgba(125, 155, 230, 0.35);
+      color: #d8e3ff;
     }
-    body.modo-escuro small { color: #c5d3ff; }
-    body.modo-escuro #toggle-tema { background: #1c427a; }
+    body.modo-escuro small {
+      color: #b7c6ef;
+    }
   </style>
 </head>
 <body>
-  <header class="topo">
-    <div>
-      <h1>Transformações Lineares (Homogêneas)</h1>
-      <p><small>Use os controles abaixo para aplicar transformações em 2D e 3D. Tudo retorna vetor no sistema cartesiano.</small></p>
-    </div>
-    <button id="toggle-tema" type="button">Modo escuro</button>
-  </header>
+  <main class="layout">
+    <header class="topo">
+      <div>
+        <h1>Transformações Lineares (Homogêneas)</h1>
+        <p class="subtitulo">Use os controles abaixo para aplicar transformações em 2D e 3D. Tudo retorna vetor no sistema cartesiano.</p>
+      </div>
+      <button id="toggle-tema" type="button">Modo escuro</button>
+    </header>
 
-  <div class="tabs">
-    <button class="tab-btn ativo" data-alvo="#painel2d">2D</button>
-    <button class="tab-btn" data-alvo="#painel3d">3D</button>
-  </div>
-
-  <!-- Painel 2D -->
-  <section id="painel2d" class="card">
-    <h2>2D</h2>
-    <div class="linha">
-      <label for="x2d">X:</label>
-      <input id="x2d" type="number" step="any" value="2" />
-      <label for="y2d">Y:</label>
-      <input id="y2d" type="number" step="any" value="1" />
+    <div class="tabs">
+      <button class="tab-btn ativo" data-alvo="#painel2d">2D</button>
+      <button class="tab-btn" data-alvo="#painel3d">3D</button>
     </div>
 
-    <div class="linha">
-      <label for="op2d">Operação:</label>
-      <select id="op2d">
-        <option>Transladar2D</option>
-        <option selected>Rotacionar2D</option>
-        <option>Refletir2DEixoX</option>
-        <option>Refletir2DEixoY</option>
-        <option>Projetar2DEixoX</option>
-        <option>Projetar2DEixoY</option>
-        <option>Cisalhar2D</option>
-      </select>
-    </div>
+    <!-- Painel 2D -->
+    <section id="painel2d" class="card">
+      <h2>Transformações em 2D</h2>
 
-    <div id="params2d" class="linha">
-      <!-- parâmetros variáveis aparecem aqui -->
-    </div>
+      <div class="linha linha-campos">
+        <div class="campo">
+          <label for="x2d">X</label>
+          <input id="x2d" type="number" step="any" value="2" />
+        </div>
+        <div class="campo">
+          <label for="y2d">Y</label>
+          <input id="y2d" type="number" step="any" value="1" />
+        </div>
+      </div>
 
-    <div class="linha">
-      <button id="aplicar2d">Aplicar</button>
-    </div>
+      <div class="linha linha-campos">
+        <div class="campo">
+          <label for="op2d">Operação</label>
+          <select id="op2d">
+            <option value="Transladar2D">Translação (2D)</option>
+            <option value="Rotacionar2D" selected>Rotação (2D)</option>
+            <option value="Refletir2DEixoX">Reflexão no eixo X</option>
+            <option value="Refletir2DEixoY">Reflexão no eixo Y</option>
+            <option value="Projetar2DEixoX">Projeção no eixo X</option>
+            <option value="Projetar2DEixoY">Projeção no eixo Y</option>
+            <option value="Cisalhar2D">Cisalhamento (2D)</option>
+          </select>
+        </div>
+      </div>
 
-    <div class="saida">
-      <strong>Saída 2D:</strong>
-      <pre id="saida2d">[ ]</pre>
-    </div>
-  </section>
+      <div id="params2d" class="linha linha-campos">
+        <!-- parâmetros variáveis aparecem aqui -->
+      </div>
 
-  <!-- Painel 3D -->
-  <section id="painel3d" class="card" style="display:none;">
-    <h2>3D</h2>
-    <div class="linha">
-      <label for="x3d">X:</label>
-      <input id="x3d" type="number" step="any" value="1" />
-      <label for="y3d">Y:</label>
-      <input id="y3d" type="number" step="any" value="-2" />
-      <label for="z3d">Z:</label>
-      <input id="z3d" type="number" step="any" value="3" />
-    </div>
+      <button class="botao-primario" id="aplicar2d">Aplicar</button>
 
-    <div class="linha">
-      <label for="op3d">Operação:</label>
-      <select id="op3d">
-        <option>Transladar3D</option>
-        <option>Rotacionar3DEixoX</option>
-        <option>Rotacionar3DEixoY</option>
-        <option selected>Rotacionar3DEixoZ</option>
-        <option>Refletir3DEixoX</option>
-        <option>Refletir3DEixoY</option>
-        <option>Refletir3DEixoZ</option>
-        <option>Projetar3DEixoX</option>
-        <option>Projetar3DEixoY</option>
-        <option>Projetar3DEixoZ</option>
-      </select>
-    </div>
+      <div class="saida">
+        <strong>Saída 2D:</strong>
+        <pre id="saida2d">[ ]</pre>
+      </div>
+    </section>
 
-    <div id="params3d" class="linha">
-      <!-- parâmetros variáveis aparecem aqui -->
-    </div>
+    <!-- Painel 3D -->
+    <section id="painel3d" class="card" style="display:none;">
+      <h2>Transformações em 3D</h2>
 
-    <div class="linha">
-      <button id="aplicar3d">Aplicar</button>
-    </div>
+      <div class="linha linha-campos">
+        <div class="campo">
+          <label for="x3d">X</label>
+          <input id="x3d" type="number" step="any" value="1" />
+        </div>
+        <div class="campo">
+          <label for="y3d">Y</label>
+          <input id="y3d" type="number" step="any" value="-2" />
+        </div>
+        <div class="campo">
+          <label for="z3d">Z</label>
+          <input id="z3d" type="number" step="any" value="3" />
+        </div>
+      </div>
 
-    <div class="saida">
-      <strong>Saída 3D:</strong>
-      <pre id="saida3d">[ ]</pre>
-    </div>
-  </section>
+      <div class="linha linha-campos">
+        <div class="campo">
+          <label for="op3d">Operação</label>
+          <select id="op3d">
+            <option value="Transladar3D">Translação (3D)</option>
+            <option value="Rotacionar3DEixoX">Rotação em torno do eixo X</option>
+            <option value="Rotacionar3DEixoY">Rotação em torno do eixo Y</option>
+            <option value="Rotacionar3DEixoZ" selected>Rotação em torno do eixo Z</option>
+            <option value="Refletir3DEixoX">Reflexão em relação ao eixo X</option>
+            <option value="Refletir3DEixoY">Reflexão em relação ao eixo Y</option>
+            <option value="Refletir3DEixoZ">Reflexão em relação ao eixo Z</option>
+            <option value="Projetar3DEixoX">Projeção no eixo X</option>
+            <option value="Projetar3DEixoY">Projeção no eixo Y</option>
+            <option value="Projetar3DEixoZ">Projeção no eixo Z</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="params3d" class="linha linha-campos">
+        <!-- parâmetros variáveis aparecem aqui -->
+      </div>
+
+      <button class="botao-primario" id="aplicar3d">Aplicar</button>
+
+      <div class="saida">
+        <strong>Saída 3D:</strong>
+        <pre id="saida3d">[ ]</pre>
+      </div>
+    </section>
+  </main>
 
   <script type="module" src="./main.js"></script>
 </body>
