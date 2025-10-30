@@ -196,6 +196,20 @@
       border-radius: 16px;
       color: var(--texto-principal);
     }
+    .plot-area {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .plot-area canvas {
+      width: 100%;
+      max-width: 100%;
+      height: 360px;
+      display: block;
+      border-radius: 12px;
+      border: 1px dashed var(--cinza-borda);
+      background: rgba(255, 255, 255, 0.6);
+    }
     pre {
       margin: 8px 0 0;
       font-size: 0.95rem;
@@ -286,6 +300,10 @@
       border-color: rgba(125, 155, 230, 0.35);
       color: #d8e3ff;
     }
+    body.modo-escuro .plot-area canvas {
+      background: rgba(18, 30, 52, 0.6);
+      border-color: rgba(125, 155, 230, 0.4);
+    }
     body.modo-escuro small {
       color: #b7c6ef;
     }
@@ -326,7 +344,7 @@
           <label for="op2d">Operação</label>
           <select id="op2d">
             <option value="translate2D">Translação (2D)</option>
-            <option value="roration2D" selected>Rotação (2D)</option>
+            <option value="rotation2D" selected>Rotação (2D)</option>
             <option value="reflection2DX">Reflexão no eixo X</option>
             <option value="reflection2DY">Reflexão no eixo Y</option>
             <option value="projection2DX">Projeção no eixo X</option>
@@ -345,6 +363,11 @@
       <div class="saida">
         <strong>Saída 2D:</strong>
         <pre id="saida2d">[ ]</pre>
+      </div>
+
+      <div class="plot-area">
+        <strong>Plano 2D:</strong>
+        <canvas id="plot2d" width="800" height="360"></canvas>
       </div>
     </section>
 
@@ -395,9 +418,15 @@
         <strong>Saída 3D:</strong>
         <pre id="saida3d">[ ]</pre>
       </div>
+
+      <div class="plot-area">
+        <strong>Plano 3D:</strong>
+        <canvas id="plot3d" width="800" height="360"></canvas>
+      </div>
     </section>
   </main>
 
   <script type="module" src="./main.js"></script>
 </body>
 </html>
+

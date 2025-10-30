@@ -8,7 +8,7 @@ export class Tranformations {
     return Transformacoes2D.Transladar2D(vector, dx, dy);
   }
 
-  static roration2D(vector, angle) {
+  static rotation2D(vector, angle) {
     return Transformacoes2D.Rotacionar2D(vector, angle);
   }
 
