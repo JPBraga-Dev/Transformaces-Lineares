@@ -1,0 +1,171 @@
+﻿<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <title>Transformações Lineares 2D/3D</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    /* CSS mínimo */
+    :root {
+      font-family: system-ui, Arial, sans-serif;
+      color-scheme: light;
+    }
+    body {
+      margin: 24px;
+      background: #ffffff;
+      color: #1a1a1a;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    h1 { margin-bottom: 8px; }
+    .topo {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .card {
+      border: 1px solid #ddd; border-radius: 10px; padding: 16px; margin-top: 12px;
+      background: rgba(255, 255, 255, 0.92);
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+    .linha { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+    label { font-size: 14px; display: inline-block; min-width: 120px; }
+    input, select, button {
+      padding: 8px; border: 1px solid #ccc; border-radius: 6px;
+      transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+    button { cursor: pointer; }
+    .tabs { display: flex; gap: 8px; margin-top: 8px; }
+    .tab-btn { border: 1px solid #ccc; background: #f7f7f7; }
+    .tab-btn.ativo { background: #eaeaea; font-weight: 600; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .saida {
+      background: #f8f8f8; border: 1px dashed #cfcfcf; padding: 12px; border-radius: 8px;
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+    small { color: #666; transition: color 0.3s ease; }
+
+    body.modo-escuro {
+      background: #071530; /* azul marinho mais profundo */
+      color: #e8efff;
+      color-scheme: dark;
+    }
+    body.modo-escuro .card {
+      background: rgba(12, 32, 68, 0.9);
+      border-color: #1f3c79;
+    }
+    body.modo-escuro input,
+    body.modo-escuro select,
+    body.modo-escuro button {
+      background: #142a55;
+      color: #e8efff;
+      border-color: #274a8b;
+    }
+    body.modo-escuro .tab-btn { background: #1f3764; }
+    body.modo-escuro .tab-btn.ativo { background: #1c427a; }
+    body.modo-escuro .saida {
+      background: rgba(10, 22, 48, 0.85);
+      border-color: #23407d;
+    }
+    body.modo-escuro small { color: #c5d3ff; }
+    body.modo-escuro #toggle-tema { background: #1c427a; }
+  </style>
+</head>
+<body>
+  <header class="topo">
+    <div>
+      <h1>Transformações Lineares (Homogêneas)</h1>
+      <p><small>Use os controles abaixo para aplicar transformações em 2D e 3D. Tudo retorna vetor no sistema cartesiano.</small></p>
+    </div>
+    <button id="toggle-tema" type="button">Modo escuro</button>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-btn ativo" data-alvo="#painel2d">2D</button>
+    <button class="tab-btn" data-alvo="#painel3d">3D</button>
+  </div>
+
+  <!-- Painel 2D -->
+  <section id="painel2d" class="card">
+    <h2>2D</h2>
+    <div class="linha">
+      <label for="x2d">X:</label>
+      <input id="x2d" type="number" step="any" value="2" />
+      <label for="y2d">Y:</label>
+      <input id="y2d" type="number" step="any" value="1" />
+    </div>
+
+    <div class="linha">
+      <label for="op2d">Operação:</label>
+      <select id="op2d">
+        <option>Transladar2D</option>
+        <option selected>Rotacionar2D</option>
+        <option>Refletir2DEixoX</option>
+        <option>Refletir2DEixoY</option>
+        <option>Projetar2DEixoX</option>
+        <option>Projetar2DEixoY</option>
+        <option>Cisalhar2D</option>
+      </select>
+    </div>
+
+    <div id="params2d" class="linha">
+      <!-- parâmetros variáveis aparecem aqui -->
+    </div>
+
+    <div class="linha">
+      <button id="aplicar2d">Aplicar</button>
+    </div>
+
+    <div class="saida">
+      <strong>Saída 2D:</strong>
+      <pre id="saida2d">[ ]</pre>
+    </div>
+  </section>
+
+  <!-- Painel 3D -->
+  <section id="painel3d" class="card" style="display:none;">
+    <h2>3D</h2>
+    <div class="linha">
+      <label for="x3d">X:</label>
+      <input id="x3d" type="number" step="any" value="1" />
+      <label for="y3d">Y:</label>
+      <input id="y3d" type="number" step="any" value="-2" />
+      <label for="z3d">Z:</label>
+      <input id="z3d" type="number" step="any" value="3" />
+    </div>
+
+    <div class="linha">
+      <label for="op3d">Operação:</label>
+      <select id="op3d">
+        <option>Transladar3D</option>
+        <option>Rotacionar3DEixoX</option>
+        <option>Rotacionar3DEixoY</option>
+        <option selected>Rotacionar3DEixoZ</option>
+        <option>Refletir3DEixoX</option>
+        <option>Refletir3DEixoY</option>
+        <option>Refletir3DEixoZ</option>
+        <option>Projetar3DEixoX</option>
+        <option>Projetar3DEixoY</option>
+        <option>Projetar3DEixoZ</option>
+      </select>
+    </div>
+
+    <div id="params3d" class="linha">
+      <!-- parâmetros variáveis aparecem aqui -->
+    </div>
+
+    <div class="linha">
+      <button id="aplicar3d">Aplicar</button>
+    </div>
+
+    <div class="saida">
+      <strong>Saída 3D:</strong>
+      <pre id="saida3d">[ ]</pre>
+    </div>
+  </section>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

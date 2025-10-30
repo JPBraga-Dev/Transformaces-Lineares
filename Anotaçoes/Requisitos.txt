@@ -1,0 +1,35 @@
+Transformações Lineares
+
+O objetivo deste trabalho é implementar as seguintes transformações lineares utilizando o sistema de coordenadas
+homogêneas em espaços vetoriais de duas dimensões (2D) e de três dimensões (3D):
+
+● Translação (em 2D e em 3D)
+    ○ translate2D(vector, dx, dy)
+    ○ translate3D(vector, dx, dy, dz)
+
+● Rotação (em 2D e em todos os eixos em 3D)
+    ○ roration2D(vector, angle)
+    ○ rotation3DX(vector, angle)
+    ○ rotation3DY(vector, angle)
+    ○ rotation3DZ(vector, angle)
+
+● Reflexão (em todos os eixos nas dimensões 2D e 3D)
+    ○ reflection2DX(vector)
+    ○ reflection2DY(vector)
+    ○ reflection3DX(vector)
+    ○ reflection3DY(vector)
+    ○ reflection3DZ(vector)
+
+● Projeção (em todos os eixos em 2D e m 3D)
+    ○ projection2DX(vector)
+    ○ projection2DY(vector)
+    ○ projection3DX(vector)
+    ○ projection3DY(vector)
+    ○ projection3DZ(vector)
+
+● Cisalhamento (apenas em 2D)
+    ○ shearing(vector, kx, ky)
+
+Deve ser criado um arquivo transformation.js que irá conter uma classe Tranformations com os respectivos métodos
+das transformações lineares. Todas as funções devem receber um vetor no sistema cartesiano e retornar um vetor no
+sistema cartesiano (internamente na função deve-se trabalhar com sistema de coordenadas homogêneas). 
