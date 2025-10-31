@@ -492,6 +492,7 @@ function renderParams3D() {
     const dz = criaCampoNumero("dz3d", "Delta Z", -1);
     params3d.append(dx.wrapper, dy.wrapper, dz.wrapper);
   } else if (
+    op === "rotation3D" ||
     op === "rotation3DX" ||
     op === "rotation3DY" ||
     op === "rotation3DZ"
